@@ -11,8 +11,8 @@ class PrimitiveBBOX:
                 "y": ("INT", {"default": 0, "min": 0, "step": 1}),
                 },
             "optional": {
-                "width": ("INT", {"default": 512, "min": 1, "step": 1}),
-                "height": ("INT", {"default": 512, "min": 1, "step": 1}),
+                "width": ("INT", {"default": 0, "min": 0, "step": 1}),
+                "height": ("INT", {"default": 0, "min": 0, "step": 1}),
                 "x_max": ("INT", {"default": 0, "min": 0, "step": 1}),
                 "y_max": ("INT", {"default": 0, "min": 0, "step": 1}),
             }
