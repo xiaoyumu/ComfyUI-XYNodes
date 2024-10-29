@@ -8,7 +8,7 @@ class PrimitiveBBOXTest(unittest.TestCase):
         box = nodes.PrimitiveBBOX()
         actual = box.primitive_bbox("XYWH", 100, 200, 512, 512)
 
-        expected = ((100, 200, 512, 512), 100, 200, 612, 712, 512, 512)
+        expected = ([(100, 200, 512, 512)], 100, 200, 612, 712, 512, 512)
 
         self.assertEqual(expected, actual)
 
@@ -16,7 +16,7 @@ class PrimitiveBBOXTest(unittest.TestCase):
         box = nodes.PrimitiveBBOX()
         actual = box.primitive_bbox("XYXY", 100, 200, x_max=612, y_max=712)
 
-        expected = ((100, 200, 512, 512), 100, 200, 612, 712, 512, 512)
+        expected = ([(100, 200, 512, 512)], 100, 200, 612, 712, 512, 512)
 
         self.assertEqual(expected, actual)
 
@@ -24,7 +24,7 @@ class PrimitiveBBOXTest(unittest.TestCase):
         box = nodes.PrimitiveBBOX()
         actual = box.primitive_bbox("CXCYWH", 356, 456, width=512, height=512)
 
-        expected = ((100, 200, 512, 512), 100, 200, 612, 712, 512, 512)
+        expected = ([(100, 200, 512, 512)], 100, 200, 612, 712, 512, 512)
 
         self.assertEqual(expected, actual)
 
