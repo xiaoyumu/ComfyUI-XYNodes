@@ -6,7 +6,7 @@ class PrimitiveBBOX:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "box_type": (["XYWH", "XYXY", "CXCYWH"]),
+                "box_type": (["XYWH", "XYXY", "CXCYWH"],),
                 "x": ("INT", {"default": 0, "min": 0, "step": 1}),
                 "y": ("INT", {"default": 0, "min": 0, "step": 1}),
                 },
