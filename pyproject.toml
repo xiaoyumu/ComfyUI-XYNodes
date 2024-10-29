@@ -1,0 +1,15 @@
+[project]
+name = "ComfyUI-XYNodes"
+description = "Nodes:PrimitiveBBOX."
+version = "1.0.0"
+license = "LICENSE"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/xiaoyumu/ComfyUI-XYNodes"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "xiaoyumu"
+DisplayName = "ComfyUI-XYNodes"
+Icon = "🛠️"
