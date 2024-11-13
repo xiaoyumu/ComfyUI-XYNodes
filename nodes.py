@@ -1,9 +1,27 @@
+import re
+from typing import List, Tuple
+
 PARENT_CATEGORY = "XY NODES"
 
 
-class PrimitiveBBOX:
+class BBOXBase:
+    @staticmethod
+    def build_output_box(output_box_type: str,
+                         x_min: int, y_min: int, width=0, height=0, x_max=0, y_max=0) -> (int, int, int, int):
+        if output_box_type == "XYWH":
+            return x_min, y_min, width, height
+
+        if output_box_type == "XYXY":
+            return x_min, y_min, x_max, y_max
+
+        if output_box_type == "CXCYWH":
+            return x_min + int(width / 2), y_min + int(height / 2), width, height
+        return None
+
+
+class PrimitiveBBOX(BBOXBase):
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "input_box_type": (["XYWH", "XYXY", "CXCYWH"],),
@@ -25,24 +43,11 @@ class PrimitiveBBOX:
     RETURN_NAMES = ("bboxes", "x_min", "y_min", "x_max", "y_max", "width", "height")
     FUNCTION = "primitive_bbox"
 
-    @staticmethod
-    def _build_output_box(output_box_type: str,
-                          x_min: int, y_min: int, width=0, height=0, x_max=0, y_max=0) -> (int, int, int, int):
-        if output_box_type == "XYWH":
-            return x_min, y_min, width, height
-
-        if output_box_type == "XYXY":
-            return x_min, y_min, x_max, y_max
-
-        if output_box_type == "CXCYWH":
-            return x_min + int(width / 2), y_min + int(height / 2), width, height
-        return None
-
     def primitive_bbox(self, input_box_type: str, output_box_type: str, x: int, y: int, width=0, height=0, x_max=0, y_max=0):
         if input_box_type == "XYWH":
             x_max = x + width
             y_max = y + height
-            return ([self._build_output_box(output_box_type, x, y, width, height, x_max, y_max)],
+            return ([self.build_output_box(output_box_type, x, y, width, height, x_max, y_max)],
                     x, y, x_max, y_max, width, height)
 
         if input_box_type == "XYXY":
@@ -51,7 +56,7 @@ class PrimitiveBBOX:
             width = x_max - x
             height = y_max - y
 
-            return ([self._build_output_box(output_box_type, x, y, width, height, x_max, y_max)],
+            return ([self.build_output_box(output_box_type, x, y, width, height, x_max, y_max)],
                     x, y, x_max, y_max, width, height)
 
         if input_box_type == "CXCYWH":
@@ -64,16 +69,54 @@ class PrimitiveBBOX:
             x_max = x + width
             y_max = y + height
 
-            return ([self._build_output_box(output_box_type, x, y, width, height, x_max, y_max)],
+            return ([self.build_output_box(output_box_type, x, y, width, height, x_max, y_max)],
                     x, y, x_max, y_max, width, height)
 
         raise ValueError(f"Unsupported bbox type '{input_box_type}'")
 
 
+class StringToBBOX(BBOXBase):
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "input_box_type": (["XYWH"],),
+                "output_box_type": (["XYWH", "XYXY", "CXCYWH"],),
+                "text": ("STRING", {"multiline": True, "default": "(123, 456, 640, 480), (522, 356, 320, 240)"}),
+            },
+        }
+
+    CATEGORY = PARENT_CATEGORY + "/bbox"
+
+    RETURN_TYPES = ("BBOX",)
+    RETURN_NAMES = ("bboxes",)
+    FUNCTION = "string_to_bbox"
+
+    _BOX_PATTERN = re.compile(r"\((\d+),\s*(\d+),\s*(\d+),\s *(\d+)\)")
+
+    def string_to_bbox(self, input_box_type: str, output_box_type: str, text: str) -> List[Tuple[int, int, int, int]]:
+        matches = re.findall(self._BOX_PATTERN, text)
+        if not matches:
+            raise ValueError(f"The text '{text}' does not contain any valid XYWH box.")
+        boxes = []
+        for x, y, width, height in matches:
+            x = int(x)
+            y = int(y)
+            width = int(width)
+            height = int(height)
+            x_max = x + width
+            y_max = y + height
+            boxes.append(self.build_output_box(output_box_type, x, y,
+                                               width=width, height=height, x_max=x_max, y_max=y_max))
+        return boxes
+
+
 NODE_CLASS_MAPPINGS = {
-    "PrimitiveBBOX": PrimitiveBBOX
+    "PrimitiveBBOX": PrimitiveBBOX,
+    "StringToBBOX": StringToBBOX
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "PrimitiveBBOX": "Primitive BBOX"
+    "PrimitiveBBOX": "Primitive BBOX",
+    "StringToBBOX": "String To BBOX"
 }
