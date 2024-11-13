@@ -1,6 +1,6 @@
 [project]
 name = "ComfyUI-XYNodes"
-description = "Nodes:PrimitiveBBOX."
+description = "Nodes:PrimitiveBBOX, StringToBBOX."
 version = "1.0.0"
 license = "LICENSE"
 dependencies = []
