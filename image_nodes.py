@@ -49,7 +49,7 @@ class ColorAdjust:
             "required": {
                 "image": ("IMAGE",),
                 "temperature": ("FLOAT", {"default": 0, "min": -100, "max": 100, "step": 5}),
-                "hue": ("FLOAT", { "default": 0, "min": -90, "max": 90, "step": 5}),
+                "hue": ("FLOAT", { "default": 0, "min": -180, "max": 180, "step": 5}),
                 "brightness": ("FLOAT", {"default": 0, "min": -100, "max": 100, "step": 5}),
                 "contrast": ("FLOAT", {"default": 0, "min": -100, "max": 100, "step": 5}),
                 "saturation": ("FLOAT", {"default": 0, "min": -100, "max": 100, "step": 5}),
